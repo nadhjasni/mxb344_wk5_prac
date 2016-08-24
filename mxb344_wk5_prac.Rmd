@@ -1,0 +1,77 @@
+---
+title: "MXB344 Week 5 Practical Logistic Regression"
+author: "Miles McBain"
+date: "24 August 2016"
+output: html_document
+---
+
+#Intro
+In this session we're going to introduce some logistic regression for predictive modelling using the titanic data from the Kaggle website. We'll see how accurately we can predict passenger survival based of data from the ship's manifest. We can submit our results to Kaggle for scoring against the public leader board.
+
+#Learning Objectives
+The exercise aims to give you the chance to apply binary logistic regression in the context of trying to produce an optimal predictive model. Concepts related to predictive performance such as the ROC curve, Confusion Matrix, Cross validation etc will be introduced applied.
+
+#Requirements
+To complete this exercise you will need a computer with R Studio installed and the following packages:
+
+* `dplyr`
+* `tidyr`
+* `ggplot2`
+* `readr`
+* `rmarkdown`
+* `caret`
+* `ROCR`
+
+
+#Instructions
+Unlike the last practicals this repository does not contain the data. To get it you will need to head over [here](https://www.kaggle.com/c/titanic) and create a kaggle account.
+
+## Get Set Up
+Assuming you are on a QUT windows PC:
+
+1. Install missing R packages in RStudio.
+2. Fork the practical repository on github.com from [here](https://github.com/MilesMcBain/MXB344_wk5_prac)
+3. Install the github windows client from [https://desktop.github.com/](https://desktop.github.com/)
+4. Clone your fork of the prac to a directory on your workstation's hard disk.
+5. Open a local version of this source file.
+7. knit this file to html.
+
+
+
+## Load the data
+Predictive modelling uses the concept of hold-out data sets for avoiding over fitting. Briefly, this means we build our model using the train set and test its performance on the test set. Kaggle have 1 further hold out set that we will be trying to make accurate predictions for. We will discuss this further in the practical session.
+
+```{r, echo=FALSE, include=FALSE}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(rmarkdown)
+library(caret)
+library(ROCR)
+#train <- read_csv("../input/train.csv")
+#test  <- read_csv("../input/test.csv")
+```
+#Practical
+
+## Exploratory Analysis
+Explore relationships using plots and summary stats.
+
+## Logistic Regression Model selection
+Fit a model based on your exploratory analysis.
+
+## Model Validation
+* Check the residuals and see why they're not helpful for binary models.
+
+## Model performance 
+For training and test sets:
+* Obtain the confusion matrix for your model using `caret::confusionMatrix()`
+* Plot a ROC curve using `ROCR::predictions()` followed by `ROCR::performance()`
+How does your model perform on the test set compared to the training set? How could you improve it? Try an alternate link function.
+
+## Make a submission for Kaggle to get scored!
+https://www.kaggle.com/c/titanic/submissions/attach
+
+## Commit your work and push it to Github
+:)
