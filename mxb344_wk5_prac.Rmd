@@ -59,19 +59,40 @@ library(ROCR)
 Explore relationships using plots and summary stats.
 
 ## Logistic Regression Model selection
-Fit a model based on your exploratory analysis.
+
+### Data Splitting
+`Use caret::createDataPartition()` to create some data splits for 'training', 'validation', and 'testing'. Use a 60/20/20% ratio initially. This is a type of  **Cross Validation**. Cross validation procedures mainly guard against over fitting by evaluating models on hold-out data. 
+
+### Model Fitting
+Fit a first pass binary glm model based on your exploratory analysis. A good one to start with would be `survival ~ pclass + gender`.
 
 ## Model Validation
 * Check the residuals and see why they're not helpful for binary models.
 
 ## Model performance 
-For training and test sets:
+For training and validation sets:
 * Obtain the confusion matrix for your model using `caret::confusionMatrix()`
+  + How do we interpret the measures in the confusion matrix output?
+  + What pitfalls can they help us avoid?
 * Plot a ROC curve using `ROCR::predictions()` followed by `ROCR::performance()`
 How does your model perform on the test set compared to the training set? How could you improve it? Try an alternate link function.
 
-## Make a submission for Kaggle to get scored!
+##Improving the model
+* To improve the model we manipulate the data to get more information out of it. Some things to try:
+    + Create a covariate for a person's title e.g.: Mrs, Ms, Mr, Dr, etc.
+    + Create a covariate for whether the person is a mother.
+    + Devise a scheme to impute (guess) missing age values. What other data might be correlated with Age?
+* This process is called **Feature Engineering**
+
+##Evaluate Improved model on test set.
+* The test set performance tells us how we expect our model to perform on the hold out data used by the Kaggle Scoring system. Evaluate your model's performance and note it for comparison with Kaggle's score.
+
+## Make a submission to Kaggle to get scored!
 https://www.kaggle.com/c/titanic/submissions/attach
+* Did you model perform as per the expectations set by the test set?
+* Do we really need the test set in this case, if there is hold-out data being used for the leader board?
+##Extensions
+There are some R tutorials for this data set ![here](https://www.kaggle.com/c/titanic/details/new-getting-started-with-r) that cover some of the topics we have discussed in this practical and more.
 
 ## Commit your work and push it to Github
 :)
