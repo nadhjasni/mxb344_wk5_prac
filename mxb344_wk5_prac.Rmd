@@ -58,15 +58,41 @@ library(ROCR)
 ## Exploratory Analysis
 Explore relationships using plots and summary stats.
 
+ggplot(data=train) + geom_bar(aes(x=Pclass, fill=factor(Survived)),position="dodge")
+
+There are more people died in class 3, whilst class 1 has the highest number of people survive.
+
+ggplot(data=train) + geom_bar(aes(x=Sex, fill=factor(Survived)),position="dodge")
+Male passenger has higher number of people died compared to female. 
+
+Inference : Logically, women and children are given more priority  to survive under life-threatening situation
+
+table(as.factor(train$Survived),as.factor(train$Embarked))
+
+the place they embark 
+
 ## Logistic Regression Model selection
 
 ### Data Splitting
 `Use caret::createDataPartition()` to create some data splits for 'training', 'validation', and 'testing'. Use a 60/20/20% ratio initially. This is a type of  **Cross Validation**. Cross validation procedures mainly guard against over fitting by evaluating models on hold-out data. 
 
+```{r}
+train_split <- caret::createDataPartition(
+               y=train$Survived,p=0.6,list=F)
+               
+train_set <- train[train_split,]  
+val_set <- train[-train_split,]
+```
+
 ### Model Fitting
 Fit a first pass binary glm model based on your exploratory analysis. A good one to start with would be `survival ~ pclass + gender`.
 
+```{r}
+surv <- glm( formula = Survived ~ Pclass + Sex, family= binomial(link = "logit"),data=train_set)
+```
+
 ## Model Validation
+plot(surv)
 * Check the residuals and see why they're not helpful for binary models.
 
 ## Model performance 
@@ -74,8 +100,33 @@ For training and validation sets:
 * Obtain the confusion matrix for your model using `caret::confusionMatrix()`
   + How do we interpret the measures in the confusion matrix output?
   + What pitfalls can they help us avoid?
+
+```{r}
+train_preds <- predicts(surv, type = "response")
+train_preds[train_preds > 0.5] <- 1
+train_preds[train_preds <=0.5] <- 0
+
+caret::confusionMatrix(data = train_preds, reference = train_set$Survived)
+
+val_preds <- predict(binom_fit1,type = "response", newdata = val_set)
+val_preds[val_preds > 0.5] <- 1
+val_preds[val_preds <= 0.5] <- 0
+
+caret::confusionMatrix(data = val_preds, reference = val_set$Survived)
+```
+
 * Plot a ROC curve using `ROCR::predictions()` followed by `ROCR::performance()`
 How does your model perform on the test set compared to the training set? How could you improve it? Try an alternate link function.
+
+```{r}
+library(ROCR)
+val_preds_p <- predict(binom_fit1,type = "response", newdata = val_set)
+val_pred_ob <- prediction(predictions = val_preds_p, labels = val_set$Survived)
+perf <- performance(val_pred_ob, measure = "tpr", x.measure = "fpr")
+plot(perf)
+
+val_gini = 2*(performance(val_pred_ob, measure = "auc")@y.values[[1]] - 0.5)
+```
 
 ##Improving the model
 * To improve the model we manipulate the data to get more information out of it. Some things to try:
